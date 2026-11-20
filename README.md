@@ -37,58 +37,50 @@
 
 **Total self-assessed original examination mark: 27/100**
 
-**Checkpoint:** Commit this completed self-assessment as the **first review commit in your new repository**, before you modify or add application code. The lecturer decides the official original examination mark.
-
 ## 2. Corrections and improvements in my new project
 
-Start from a **fresh copy of the starter template for your own exam group**, in a **new GitHub repository**. You may consult or selectively reuse your own original examination code, but the new project must demonstrate that you understand and can correct it. Do not change your original examination submission.
 
-Describe **two or three important problems** in your original code. For each, explain what was wrong, which class or method you changed in the new project, and why the corrected approach works.
+**Problem and correction 1:** I included 2 @Id annotations and both are missing fields. I changed booking to have a single @Id. I also added int attendeeCount and String status = ACTIVE. This corrected approach works because @Id is now a primary key, so the roomId wont be its identity. Also, with status, every new booking is ACTIVE
 
-**Problem and correction 1:**  
-
-**Problem and correction 2:**  
-
-**Problem and correction 3 (optional):**  
+**Problem and correction 2:** I was reading room data using a repository instead of using OpenFeign. The correction was to add RoomClient that was annotated witn OpenFeign's @FeignClient that had @GetMapping("/api/rooms/{id}"), which this time returns a DTO. Also I added @EnableFeignClients to the main class. BookingService now calls roomClient.getRoom(...), rejects the request with 400 if attendeeCount is greater than the capacity 
 
 ## 3. API testing and evidence
 
 Use Swagger UI or another HTTP client. For **at least four meaningful checks**, record the request/input, expected result, actual HTTP status/response, and pass/fail. Include unsuccessful cases; a running application alone is not enough.
 
 **Test 1 — successful booking request:**  
-- Request / input:  
-- Expected:  
-- Actual HTTP status / body:  
-- Pass / fail:  
+- Request / input:  POST http://localhost:8081/api/bookings. {"roomId":1,"organiserName":"Padraic O Loughlin","attendeeCount":3}
+- Expected:  201, booking with status active
+- Actual HTTP status / body:  201, bookingId 3, attendeeCount 3, roomId 1, status ACTIVE
+- Pass / fail:  Pass
 
 **Test 2 — invalid input or excessive attendee count:**  
-- Request / input:  
-- Expected:  
-- Actual HTTP status / body:  
-- Pass / fail:  
+- Request / input:  POST http://locahost:8081/api/bookings. {"roomId":1,"organiserName":"Padraic O Loughlin","attendeeCount":300}
+- Expected:  400
+- Actual HTTP status / body:  400, "attendeeCount exceeds room capacity of 24"
+- Pass / fail:  Pass
 
-**Test 3 — missing booking or room:**  
-- Request / input:  
-- Expected:  
-- Actual HTTP status / body:  
-- Pass / fail:  
+- Request / input: POST http://localhost:8081/api/bookings. {"roomId":1,"organiserName":"P","attendeeCount":-3}
+- Expected: 400
+- Actual HTTP status / body: 400, "Validation failed for object='bookingRequest'. Error count: 2" (attendeeCount rejected value -3, failed @Positive)
+- Result: Pass
 
 **Test 4 — requirement specific to my group:**  
-- Request / input:  
-- Expected:  
-- Actual HTTP status / body:  
-- Pass / fail:  
-
-**Group B:** Run the **provided** Room Service separately on port 8082 and the **new** Booking Service on port 8081. Demonstrate that booking creation obtains room details through OpenFeign and that booking retrieval uses the local Booking database. Do not modify the Room Service.
+- Request / input:  POST http://localhost:8081/api/bookings. {"roomId":9999,"organiserName":"Padraic O Loughlin","attendeeCount":3}
+- Expected:  404
+- Actual HTTP status / body:  404, message "Room not found"
+- Pass / fail:  Pass
 
 ## 4. Reflection
 
 **What did I understand during the examination but struggle to implement?**  
+I understood the basic project setup and memorised it to be Entity - Repository - DTO - Service and Controller. But once I had to link things such as the Repository to the correct service, I got confused. What exactly needed to be handled was an aspect i struggled with also, as I forgot error messages and coutless other key parts of the code.
 
 **Which Spring Boot, JPA, validation, JPQL or OpenFeign concept became clearer after correcting my code? Give a specific example.**  
+Before the exam I thought that room data was able to be gotten from booking service, even if they are not on the same database. So the RoomRepository.findById() could never work since they are different programs on different ports. Now I know that OpenFeign can solve this by creating a method body, which sends data to the specific port, and converts the response to a DTO. The capacity message and room not found message both came from OpenFeign, which in my case was "capacity of 24"
 
 **What will I do differently in my next coding test or API development task?**  
-
+Further learn how the code communicates with OpenFeign and SpringBoot, to know how to manipulate structure depending on whats asked
 ## Review lab assessment — 20 marks
 
 - Honest original self-assessment with code evidence: **4 marks**

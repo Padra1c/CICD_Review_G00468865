@@ -23,7 +23,6 @@ public class BookingService {
     }
 
     public BookingResponse createBooking(BookingRequest request) {
-        // 1. Ask the Room Service (over HTTP, via Feign) for the room.
         RoomDTO room;
         try {
             room = roomClient.getRoom(request.roomId());
@@ -31,13 +30,11 @@ public class BookingService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found");
         }
 
-        // 2. Reject if too many attendees.
         if (request.attendeeCount() > room.capacity()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Attendee count exceeds room capacity of " + room.capacity());
         }
 
-        // 3. Save to the LOCAL Booking database (status defaults to ACTIVE).
         Booking booking = new Booking();
         booking.setOrganiserName(request.organiserName());
         booking.setAttendeeCount(request.attendeeCount());
