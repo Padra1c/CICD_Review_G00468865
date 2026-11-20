@@ -7,21 +7,35 @@
 
 ## 1. My original examination self-assessment
 
-Review the code **as submitted in the original examination**. Do not change the original repository, branch or pull request. Check your own Group A or Group B examination paper and award marks only for evidence present in the original submission.
-
 ### Task 1 — /40
-**My mark:**  
-**Evidence from the original code (files, methods, working or missing requirements):**  
+**My mark: 15**  
+**Evidence from the original code (files, methods, working or missing requirements):** 
+- The booking entity included an 'id', 'organiserName', 'roomId', no args constructor, 'BookingRepo' and extended my JpaRepository 
+- '@NotBlank' was included in 'organiserName'
+- An attendeeCount and status check was not included in my code
+- id and roomId were given the same annotation
+- Only 1 dto instead of 2 
+
 
 ### Task 2 — /40
-**My mark:**  
-**Evidence from the original code:**  
+**My mark: 2**  
+**Evidence from the original code:** 
+- No @FeignClient or @EnableFeignClients
+- In BookingService, RoomRepository and the Room class were never initialised,
+- findById() had no argument, if() was outside method
+- POST had no endpoint and wasnt able to save bookings or check the capacity of rooms
+- GET wasnt able to be tested
+
 
 ### Task 3 — /20
-**My mark:**  
-**Evidence from the original code:**  
+**My mark: 10**  
+**Evidence from the original code:**
+- getBooking in BookingController read from bookingRepo.findById(id) and used ResponseStatusException with NOT_FOUND and "Booking not found" when missing
+- /api/booking was mapped instead of /api/bookings
+- Didnt return DTO
+- Project didnt compile 
 
-**Total self-assessed original examination mark: /100**
+**Total self-assessed original examination mark: 27/100**
 
 **Checkpoint:** Commit this completed self-assessment as the **first review commit in your new repository**, before you modify or add application code. The lecturer decides the official original examination mark.
 
@@ -64,8 +78,6 @@ Use Swagger UI or another HTTP client. For **at least four meaningful checks**, 
 - Expected:  
 - Actual HTTP status / body:  
 - Pass / fail:  
-
-**Group A:** Demonstrate `GET /api/bookings/search?roomName=...` using an exact room name, bookings ordered by attendee count descending, and an empty list for no matches. Add checks if necessary to show all three behaviours.
 
 **Group B:** Run the **provided** Room Service separately on port 8082 and the **new** Booking Service on port 8081. Demonstrate that booking creation obtains room details through OpenFeign and that booking retrieval uses the local Booking database. Do not modify the Room Service.
 
